@@ -1,68 +1,52 @@
 import { Router } from 'express';
+import Product from '../../models/product.js';
 
 const productsController = Router();
 
-const products = [
-  {
-    'name': 'Batata frita',
-    'type': 'Porção',
-    'price': 15,
-    'description': 'Uma porção de batata frita',
-  },
-  {
-    'name': 'Nuggets',
-    'type': 'Porção',
-    'price': 19,
-    'description': 'Uma porção de nuggets de frango',
-  },
-];
-
-productsController.get('/', (req, res) => {
-  return res.json(products);
+productsController.get('/', async (req, res) => {
+  const findProducts = await Product.find();
+  return res.json(findProducts);
 });
 
-productsController.get('/:name', (req, res) => {
+productsController.get('/:name', async (req, res) => {
   /* 
   req = {
     params: {
       name: "Batata Frita"
     }
   }
-
   */
-  const productToFind = req.params.name.toUpperCase();
+  const productToFind = req.params.name;
 
-  const product = products.find((product) => {
-    return product.name.toUpperCase() === productToFind;
-  });
+  const findByName = await Product.find({name: productToFind});
+
+  return res.json(findByName);
+});
+
+productsController.post('/', async (req, res) => {
+
+  const product = new Product (req.body);
+  await product.save();
   return res.json(product);
+
 });
 
-productsController.post('/', (req, res) => {
-  const product = req.body;
-  products.push(product);
-  return res.json(product);
+productsController.put('/:name', async (req, res) => {
+  const productName = req.params.name;
+
+  const update = req.body;
+
+  let doc = await Product.findOneAndUpdate({name:productName}, update);
+
+  return res.json(doc);
 });
 
-productsController.put('/:name', (req, res) => {
-  const productName = req.params.name.toUpperCase();
-  const productIndex = products.findIndex(
-    (product) => product.name.toUpperCase() === productName
-  );
+productsController.delete('/:name', async (req, res) => {
+  const productName = req.params.name;
 
-  products[productIndex] = req.body;
+  let del = await Product.deleteOne({name: productName});
 
-  return res.json(products[productIndex]);
-});
-
-productsController.delete('/:name', (req, res) => {
-  const productName = req.params.name.toUpperCase();
-  const productIndex = products.findIndex(
-    (product) => product.name.toUpperCase() === productName
-  );
-
-  products.splice(productIndex, 1);
-  return res.json(products);
+  return res.json(del);
 });
 
 export default productsController;
