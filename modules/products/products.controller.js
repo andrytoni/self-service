@@ -17,35 +17,26 @@ productsController.get('/:name', async (req, res) => {
   }
   */
   const productToFind = req.params.name;
-
-  const findByName = await Product.find({name: productToFind});
-
+  const findByName = await Product.find({ name: productToFind });
   return res.json(findByName);
 });
 
 productsController.post('/', async (req, res) => {
-
-  const product = new Product (req.body);
+  const product = new Product(req.body);
   await product.save();
   return res.json(product);
-
 });
 
 productsController.put('/:name', async (req, res) => {
   const productName = req.params.name;
-
   const update = req.body;
-
-  let doc = await Product.findOneAndUpdate({name:productName}, update);
-
+  let doc = await Product.findOneAndUpdate({ name: productName }, update);
   return res.json(doc);
 });
 
 productsController.delete('/:name', async (req, res) => {
   const productName = req.params.name;
-
-  let del = await Product.deleteOne({name: productName});
-
+  let del = await Product.deleteOne({ name: productName });
   return res.json(del);
 });
 

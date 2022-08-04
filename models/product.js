@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({
-    name: String,
-    type: String,
-    price: Number,
-    description: String
+  name: String,
+  type: String,
+  price: Number,
+  description: String
 });
 
 //module.exports = mongoose.model('Product', schema);
