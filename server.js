@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const errorHandler = (err, req, res, next) => {
-  console.log(err.message);
-  res.send(err.message);
+  console.log(err);
+  res.status(500).send({ error: err.message });
 };
 
 app.use(express.json());
