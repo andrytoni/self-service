@@ -1,68 +1,56 @@
 import { Router } from 'express';
+import Product from '../../models/product.js';
 
 const productsController = Router();
 
-const products = [
-  {
-    'name': 'Batata frita',
-    'type': 'Porção',
-    'price': 15,
-    'description': 'Uma porção de batata frita',
-  },
-  {
-    'name': 'Nuggets',
-    'type': 'Porção',
-    'price': 19,
-    'description': 'Uma porção de nuggets de frango',
-  },
-];
-
-productsController.get('/', (req, res) => {
-  return res.json(products);
-});
-
-productsController.get('/:name', (req, res) => {
-  /* 
-  req = {
-    params: {
-      name: "Batata Frita"
-    }
+productsController.get('/', async (req, res, next) => {
+  try {
+    const findProducts = await Product.find();
+    return res.json(findProducts);
+  } catch (err) {
+    return next(err);
   }
-
-  */
-  const productToFind = req.params.name.toUpperCase();
-
-  const product = products.find((product) => {
-    return product.name.toUpperCase() === productToFind;
-  });
-  return res.json(product);
 });
 
-productsController.post('/', (req, res) => {
-  const product = req.body;
-  products.push(product);
-  return res.json(product);
+productsController.get('/:name', async (req, res, next) => {
+  try {
+    const productToFind = req.params.name.toUpperCase();
+    const findByName = await Product.find({ name: productToFind });
+    return res.json(findByName);
+  } catch (err) {
+    return next(err);
+  }
 });
 
-productsController.put('/:name', (req, res) => {
-  const productName = req.params.name.toUpperCase();
-  const productIndex = products.findIndex(
-    (product) => product.name.toUpperCase() === productName
-  );
-
-  products[productIndex] = req.body;
-
-  return res.json(products[productIndex]);
+productsController.post('/', async (req, res, next) => {
+  try {
+    const product = new Product(req.body);
+    await product.save();
+    return res.json(product);
+  } catch (err) {
+    return next(err);
+  }
 });
 
-productsController.delete('/:name', (req, res) => {
-  const productName = req.params.name.toUpperCase();
-  const productIndex = products.findIndex(
-    (product) => product.name.toUpperCase() === productName
-  );
+productsController.put('/:name', async (req, res, next) => {
+  try {
+    const productName = req.params.name.toUpperCase();
+    const update = req.body;
+    const doc = await Product.findOneAndUpdate({ name: productName }, update);
+    return res.json(doc);
+  } catch (err) {
+    return next(err);
+  }
+});
 
-  products.splice(productIndex, 1);
-  return res.json(products);
+productsController.delete('/:name', async (req, res, next) => {
+  try {
+    const productName = req.params.name.toUpperCase();
+    const del = await Product.deleteOne({ name: productName });
+    return res.json(del);
+  } catch (err) {
+    return next(err);
+  }
 });
 
 export default productsController;
