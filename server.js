@@ -4,16 +4,17 @@ import productsController from './modules/products/products.controller.js';
 import mongoose from 'mongoose';
 
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true
+  useNewUrlParser: true,
 });
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+// eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   console.log(err);
-  res.status(500).send({ error: err.message });
+  return res.status(500).json({ error: err.message });
 };
 
 app.use(express.json());
