@@ -1,5 +1,3 @@
-import Product from '../../models/product.js';
-
 const productService = (Product) => {
   const findAll = async () => {
     return Product.find();
@@ -42,7 +40,7 @@ const productService = (Product) => {
     findByName,
     createNewProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
   };
 };
 
