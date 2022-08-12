@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import Product from '../../models/product.js';
+import productService from './product.service.js';
 
 const productsController = Router();
+const service = productService(Product);
 
 productsController.get('/', async (req, res, next) => {
   try {
-    const findProducts = await Product.find();
+    const findProducts = await service.findAll();
     return res.json(findProducts);
   } catch (err) {
     return next(err);
@@ -14,8 +16,7 @@ productsController.get('/', async (req, res, next) => {
 
 productsController.get('/:name', async (req, res, next) => {
   try {
-    const productToFind = req.params.name.toUpperCase();
-    const findByName = await Product.find({ name: productToFind });
+    const findByName = await service.findByName(req.params.name);
     return res.json(findByName);
   } catch (err) {
     return next(err);
@@ -24,9 +25,8 @@ productsController.get('/:name', async (req, res, next) => {
 
 productsController.post('/', async (req, res, next) => {
   try {
-    const product = new Product(req.body);
-    await product.save();
-    return res.json(product);
+    const newProduct = await service.createNewProduct(req.body);
+    return res.json(newProduct);
   } catch (err) {
     return next(err);
   }
@@ -34,10 +34,9 @@ productsController.post('/', async (req, res, next) => {
 
 productsController.put('/:name', async (req, res, next) => {
   try {
-    const productName = req.params.name.toUpperCase();
-    const update = req.body;
-    const doc = await Product.findOneAndUpdate({ name: productName }, update);
-    return res.json(doc);
+    const update = await service.updateProduct(req.params.name, req.body);
+
+    return res.json(update);
   } catch (err) {
     return next(err);
   }
@@ -45,8 +44,7 @@ productsController.put('/:name', async (req, res, next) => {
 
 productsController.delete('/:name', async (req, res, next) => {
   try {
-    const productName = req.params.name.toUpperCase();
-    const del = await Product.deleteOne({ name: productName });
+    const del = await service.deleteProduct(req.params.name);
     return res.json(del);
   } catch (err) {
     return next(err);
