@@ -15,6 +15,7 @@ const schema = new mongoose.Schema({
   owner: {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
+      unique: false,
     },
     table: {
       type: Number,

@@ -3,10 +3,17 @@ import express from 'express';
 import productsController from './modules/products/products.controller.js';
 import ordersController from './modules/orders/orders.controller.js';
 import mongoose from 'mongoose';
+import orderServiceTest from './teste.js';
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-});
+mongoose.connect(
+  process.env.MONGODB_URI,
+  {
+    useNewUrlParser: true,
+  },
+  async () => {
+    await orderServiceTest();
+  }
+);
 
 const PORT = process.env.PORT || 3000;
 
