@@ -1,28 +1,28 @@
 import mongoose from 'mongoose';
 
 const orderService = (Order) => {
-  const calculateTotal = async (reqBody) => {
-    if (!reqBody) {
+  const calculateTotal = async (products) => {
+    if (!products) {
       throw new Error('Parameters are required');
     }
     let total = 0;
-    for (let i = 0; i < reqBody.products.length; i++) {
-      total += reqBody.products[i].price;
+    for (let i = 0; i < products.length; i++) {
+      total += products[i].price;
     }
 
     return total;
   };
 
-  const createNewOrder = async (reqBody) => {
-    if (!reqBody) {
+  const createNewOrder = async (orderReq) => {
+    if (!orderReq) {
       throw new Error('Parameters are required');
     }
-    if (!reqBody.owner._id) {
-      reqBody.owner._id = new mongoose.Types.ObjectId();
+    if (!orderReq.owner._id) {
+      orderReq.owner._id = new mongoose.Types.ObjectId();
     }
-    reqBody.totalValue = await calculateTotal(reqBody);
+    orderReq.totalValue = await calculateTotal(orderReq.products);
 
-    return new Order(reqBody).save();
+    return new Order(orderReq).save();
   };
 
   const findAllOrders = async () => {
@@ -36,6 +36,8 @@ const orderService = (Order) => {
   };
 
   const findByTable = async (table) => {
+    console.log(table);
+
     if (!table) {
       throw new Error('Table param is required');
     }
@@ -60,32 +62,36 @@ const orderService = (Order) => {
     if (!date) {
       throw new Error('Date is required');
     }
-    return Order.find({ createdAt: date });
+
+    const startDate = new Date(date);
+    const finalDate = new Date(date);
+    finalDate.setHours(44);
+    finalDate.setMinutes(59);
+    finalDate.setSeconds(59);
+
+    return Order.find({ createdAt: { $gte: startDate, $lte: finalDate } });
   };
 
-  const updateOrder = async (id, reqBody) => {
+  const updateOrder = async (id, orderReq) => {
     if (!id) {
       throw new Error('ID is required');
     }
-    if (!reqBody) {
+    if (!orderReq) {
       throw new Error('Update parameter is required');
     }
-    return Order.findByIdAndUpdate(id, reqBody);
+    return Order.findByIdAndUpdate(id, orderReq);
   };
 
-  const cancelOrder = async (id, cancelParam) => {
+  const cancelOrder = async (id) => {
     if (!id) {
       throw new Error('ID is required');
     }
-    if (!cancelParam) {
-      throw new Error('Cancel parameter is required');
-    }
-    return Order.findOneAndUpdate({ _id: id }, cancelParam);
+
+    return Order.findByIdAndUpdate(id, { canceled: true });
   };
 
   return {
     createNewOrder,
-    calculateTotal,
     findAllOrders,
     findById,
     findByTable,

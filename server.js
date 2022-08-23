@@ -3,7 +3,7 @@ import express from 'express';
 import productsController from './modules/products/products.controller.js';
 import ordersController from './modules/orders/orders.controller.js';
 import mongoose from 'mongoose';
-import orderServiceTest from './teste.js';
+import orderServiceTest from './order-service-test.js';
 
 mongoose.connect(
   process.env.MONGODB_URI,
