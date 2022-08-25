@@ -2,27 +2,54 @@ import mongoose from 'mongoose';
 
 const orderService = (Order) => {
   const calculateTotal = async (products) => {
+    if (Array.isArray(products) == false) {
+      throw new Error('Array of products is required');
+    }
     if (!products) {
       throw new Error('Parameters are required');
     }
+    const priceValidator = products.map((products) => {
+      if (typeof products.price == 'string') {
+        throw new Error('Price cant be a string');
+      }
+    });
     let total = 0;
-    for (let i = 0; i < products.length; i++) {
-      total += products[i].price;
-    }
+    total = products.reduce(
+      (previousValue, currentValue) => previousValue + currentValue.price,
+      0
+    );
 
     return total;
   };
 
-  const createNewOrder = async (orderReq) => {
-    if (!orderReq) {
+  const createNewOrder = async (order) => {
+    if (!order) {
       throw new Error('Parameters are required');
     }
-    if (!orderReq.owner._id) {
-      orderReq.owner._id = new mongoose.Types.ObjectId();
+    if (!order.owner._id) {
+      order.owner._id = new mongoose.Types.ObjectId();
     }
-    orderReq.totalValue = await calculateTotal(orderReq.products);
+    order.totalValue = await calculateTotal(order.products);
 
-    return new Order(orderReq).save();
+    return new Order(order).save();
+  };
+
+  const find = async (query) => {
+    const { table, date, status, ownerId } = query;
+    const queryFinal = {};
+
+    if (table) queryFinal['owner.table'] = table;
+    if (status) queryFinal.status = status;
+    if (date) {
+      const startDate = new Date(date);
+      const finalDate = new Date(date);
+      finalDate.setDate(startDate.getDate() + 1);
+
+      queryFinal.createdAt = { $gte: startDate, $lte: finalDate };
+    }
+    if (ownerId) queryFinal['owner._id'] = ownerId;
+
+    return Order.find(queryFinal);
   };
 
   const findAllOrders = async () => {
@@ -72,14 +99,14 @@ const orderService = (Order) => {
     return Order.find({ createdAt: { $gte: startDate, $lte: finalDate } });
   };
 
-  const updateOrder = async (id, orderReq) => {
+  const updateOrder = async (id, order) => {
     if (!id) {
       throw new Error('ID is required');
     }
-    if (!orderReq) {
+    if (!order) {
       throw new Error('Update parameter is required');
     }
-    return Order.findByIdAndUpdate(id, orderReq);
+    return Order.findByIdAndUpdate(id, order);
   };
 
   const cancelOrder = async (id) => {
@@ -100,6 +127,7 @@ const orderService = (Order) => {
     findByDate,
     updateOrder,
     cancelOrder,
+    find,
   };
 };
 

@@ -99,11 +99,3 @@ const orderServiceTest = async () => {
 };
 
 export default orderServiceTest;
-
-// - mudar o calculate total irá receber a array de produtos somente e nao a ordem completa
-// - trocar reqbody por order
-// -para o find by date passar somente a data e não horario
-// - cancel order, fazer o update sem receber parametro do cliente
-
-// controller:
-// express query strings
