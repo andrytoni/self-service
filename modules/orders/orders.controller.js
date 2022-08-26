@@ -16,9 +16,8 @@ ordersController.post('/', async (req, res, next) => {
 
 ordersController.get('/', async (req, res, next) => {
   try {
-    const order = req.query;
-    const findOrder = await orderService.find(order);
-    return res.json(findOrder);
+    const orders = await orderService.find(req.query);
+    return res.json(orders);
   } catch (error) {
     return next(error);
   }
@@ -26,8 +25,8 @@ ordersController.get('/', async (req, res, next) => {
 
 ordersController.get('/:_id', async (req, res, next) => {
   try {
-    const findById = await orderService.findById(req.params._id);
-    return res.json(findById);
+    const order = await orderService.findById(req.params._id);
+    return res.json(order);
   } catch (error) {
     return next(error);
   }

@@ -36,20 +36,20 @@ const orderService = (Order) => {
 
   const find = async (query) => {
     const { table, date, status, ownerId } = query;
-    const queryFinal = {};
+    const finalQuery = {};
 
-    if (table) queryFinal['owner.table'] = table;
-    if (status) queryFinal.status = status;
+    if (table) finalQuery['owner.table'] = table;
+    if (status) finalQuery.status = status;
     if (date) {
       const startDate = new Date(date);
       const finalDate = new Date(date);
       finalDate.setDate(startDate.getDate() + 1);
 
-      queryFinal.createdAt = { $gte: startDate, $lte: finalDate };
+      finalQuery.createdAt = { $gte: startDate, $lte: finalDate };
     }
-    if (ownerId) queryFinal['owner._id'] = ownerId;
+    if (ownerId) finalQuery['owner._id'] = ownerId;
 
-    return Order.find(queryFinal);
+    return Order.find(finalQuery);
   };
 
   const findAllOrders = async () => {
