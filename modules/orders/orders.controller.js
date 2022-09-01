@@ -8,9 +8,10 @@ const orderService = ordersService(Order);
 ordersController.post('/', async (req, res, next) => {
   try {
     const newOrder = await orderService.createNewOrder(req.body);
+
     return res.json(newOrder);
-  } catch (err) {
-    return next(err);
+  } catch (error) {
+    return next(error);
   }
 });
 
@@ -35,20 +36,18 @@ ordersController.get('/:_id', async (req, res, next) => {
 ordersController.put('/:_id', async (req, res, next) => {
   try {
     const update = await orderService.updateOrder(req.params._id, req.body);
-
     return res.json(update);
-  } catch (err) {
-    return next(err);
+  } catch (error) {
+    return next(error);
   }
 });
 
 ordersController.put('/cancel/:_id', async (req, res, next) => {
   try {
     const cancel = await orderService.cancelOrder(req.params._id);
-
     return res.json(cancel);
-  } catch (err) {
-    return next(err);
+  } catch (error) {
+    return next(error);
   }
 });
 

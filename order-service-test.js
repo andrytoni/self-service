@@ -99,3 +99,37 @@ const orderServiceTest = async () => {
 };
 
 export default orderServiceTest;
+
+// arrumar calculate total, mudar validação de number, colocar validação no reduce,
+// retirar async await do calculate total
+// arrumar data
+// padronizar espaços e errors
+
+// const numbers = [
+//   { name: 'bla bla', price: 'sdfsdfsdf' },
+//   { name: 'bla bla', price: 200 },
+//   { name: 'bla bla', price: 300 },
+//   { name: 'bla bla', price: 400 },
+//   { name: 'bla bla', price: '500' },
+// ];
+// // const numbers = [100, 200, 300, 400, '500'];
+// const num2 = 100;
+
+// const calculateTotal = (products) => {
+//   if (Array.isArray(products) == false) {
+//     throw new Error('Array of products is required');
+//   }
+
+//   let total = products.reduce((previousValue, currentValue) => {
+//     if (isNaN(currentValue.price) == true) {
+//       throw new Error('Price is not a valid number');
+//     }
+
+//     let current = Number(currentValue.price);
+//     return previousValue + current;
+//   }, 0);
+
+//   return total;
+// };
+
+// console.log(calculateTotal(numbers));

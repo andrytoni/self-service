@@ -1,23 +1,19 @@
 import mongoose from 'mongoose';
 
 const orderService = (Order) => {
-  const calculateTotal = async (products) => {
+  const calculateTotal = (products) => {
     if (Array.isArray(products) == false) {
       throw new Error('Array of products is required');
     }
-    if (!products) {
-      throw new Error('Parameters are required');
-    }
-    const priceValidator = products.map((products) => {
-      if (typeof products.price == 'string') {
-        throw new Error('Price cant be a string');
+
+    let total = products.reduce((previousValue, currentValue) => {
+      if (isNaN(currentValue.price) == true) {
+        throw new Error('Price is not a valid number');
       }
-    });
-    let total = 0;
-    total = products.reduce(
-      (previousValue, currentValue) => previousValue + currentValue.price,
-      0
-    );
+
+      let current = Number(currentValue.price);
+      return previousValue + current;
+    }, 0);
 
     return total;
   };
@@ -29,7 +25,7 @@ const orderService = (Order) => {
     if (!order.owner._id) {
       order.owner._id = new mongoose.Types.ObjectId();
     }
-    order.totalValue = await calculateTotal(order.products);
+    order.totalValue = calculateTotal(order.products);
 
     return new Order(order).save();
   };
@@ -44,30 +40,26 @@ const orderService = (Order) => {
       const startDate = new Date(date);
       const finalDate = new Date(date);
       finalDate.setDate(startDate.getDate() + 1);
-
-      finalQuery.createdAt = { $gte: startDate, $lte: finalDate };
+      finalQuery.createdAt = { $gte: startDate, $lt: finalDate };
     }
     if (ownerId) finalQuery['owner._id'] = ownerId;
 
     return Order.find(finalQuery);
   };
 
-  const findAllOrders = async () => {
-    return Order.find();
-  };
   const findById = async (id) => {
     if (!id) {
       throw new Error('Id is required');
     }
+
     return Order.findById(id);
   };
 
   const findByTable = async (table) => {
-    console.log(table);
-
     if (!table) {
       throw new Error('Table param is required');
     }
+
     return Order.find({ 'owner.table': table });
   };
 
@@ -75,13 +67,15 @@ const orderService = (Order) => {
     if (!ownerId) {
       throw new Error('Id is required');
     }
+
     return Order.find({ 'owner._id': ownerId });
   };
 
   const findByStatus = async (statusNum) => {
-    // if (!statusNum) {
-    //   throw new Error('Status is required');
-    // }
+    if (!statusNum) {
+      throw new Error('Status is required');
+    }
+
     return Order.find({ status: statusNum });
   };
 
@@ -89,14 +83,11 @@ const orderService = (Order) => {
     if (!date) {
       throw new Error('Date is required');
     }
-
     const startDate = new Date(date);
     const finalDate = new Date(date);
-    finalDate.setHours(44);
-    finalDate.setMinutes(59);
-    finalDate.setSeconds(59);
+    finalDate.setDate(startDate.getDate() + 1);
 
-    return Order.find({ createdAt: { $gte: startDate, $lte: finalDate } });
+    return Order.find({ createdAt: { $gte: startDate, $lt: finalDate } });
   };
 
   const updateOrder = async (id, order) => {
@@ -106,6 +97,7 @@ const orderService = (Order) => {
     if (!order) {
       throw new Error('Update parameter is required');
     }
+
     return Order.findByIdAndUpdate(id, order);
   };
 
@@ -119,7 +111,6 @@ const orderService = (Order) => {
 
   return {
     createNewOrder,
-    findAllOrders,
     findById,
     findByTable,
     findByOwnerId,
