@@ -98,13 +98,14 @@ const userService = (User) => {
     if (userUpdate.password) return User.findByIdAndUpdate(id, userUpdate);
   };
 
-  const changePassword = async (id, passwordUpdate, user) => {
+  const changePassword = async (id, passwordUpdate) => {
     if (!id) {
       throw new Error('ID is required');
     }
     if (!passwordUpdate) {
       throw new Error('New password is required');
     }
+    let user = await findById(id);
 
     let passwordValidation = validatePassword(
       passwordUpdate,
@@ -119,10 +120,11 @@ const userService = (User) => {
     return User.findByIdAndUpdate(id, { password: passwordUpdate });
   };
 
-  const changeUserStatus = async (id, user) => {
+  const changeUserStatus = async (id) => {
     if (!id) {
       throw new Error('ID is required');
     }
+    let user = await findById(id);
 
     if (user.isActive === true) {
       return User.findByIdAndUpdate(id, { isActive: false });
