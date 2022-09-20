@@ -95,11 +95,10 @@ const userService = (User) => {
     if (!userUpdate) {
       throw new Error('Update parameter is required');
     }
-
-    return User.findByIdAndUpdate(id, userUpdate);
+    if (userUpdate.password) return User.findByIdAndUpdate(id, userUpdate);
   };
 
-  const changePassword = async (id, passwordUpdate) => {
+  const changePassword = async (id, passwordUpdate, user) => {
     if (!id) {
       throw new Error('ID is required');
     }
@@ -107,26 +106,30 @@ const userService = (User) => {
       throw new Error('New password is required');
     }
 
-    // let passwordValidation = validatePassword(id.password, id.email, id.name);
+    let passwordValidation = validatePassword(
+      passwordUpdate,
+      user.email,
+      user.name
+    );
 
-    // if (passwordValidation.length > 1) {
-    //   passwordValidation = passwordValidation.join('\n');
-    //   throw new Error(passwordValidation);
-    // }
+    if (passwordValidation.length > 1) {
+      passwordValidation = passwordValidation.join('\n');
+      throw new Error(passwordValidation);
+    }
     return User.findByIdAndUpdate(id, { password: passwordUpdate });
   };
 
-  // const changeUserStatus = async (id) => {
-  //   if (!id) {
-  //     throw new Error('ID is required');
-  //   }
+  const changeUserStatus = async (id, user) => {
+    if (!id) {
+      throw new Error('ID is required');
+    }
 
-  //   return User.findByIdAndUpdate(id, function() => {
-  //     if({isActive: true}){
-  //       return {isActive: false}
-  //     }
-  //   })
-  // }
+    if (user.isActive === true) {
+      return User.findByIdAndUpdate(id, { isActive: false });
+    } else {
+      return User.findByIdAndUpdate(id, { isActive: true });
+    }
+  };
 
   return {
     createNewUser,
@@ -135,6 +138,7 @@ const userService = (User) => {
     find,
     updateUser,
     changePassword,
+    changeUserStatus,
   };
 };
 
