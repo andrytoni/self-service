@@ -2,10 +2,9 @@ import mongoose from 'mongoose';
 
 const userService = (User) => {
   const getPasswordErrors = (password, email, name) => {
-    const uppercaseName = name.toUpperCase();
+    const partsOfName = name.toUpperCase().split(' ');
     const uppercasePassword = password.toUpperCase();
     const partOfEmail = email.split('@')[0].toUpperCase();
-    const partsOfName = uppercaseName.split(' ');
     const passwordError = {
       hasError: false,
       errors: ['Password validations:'],
@@ -32,6 +31,7 @@ const userService = (User) => {
     for (let i = 0; i < partsOfName.length; i++) {
       if (uppercasePassword.includes(partsOfName[i])) {
         passwordError.errors.push("- Can't contain parts of the name.");
+        break;
       }
     }
 
