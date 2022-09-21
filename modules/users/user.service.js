@@ -49,6 +49,10 @@ const userService = (User) => {
       throw new Error('Parameters are required');
     }
 
+    if (!user.email.includes('@')) {
+      throw new Error('Email not valid');
+    }
+
     let passwordErrors = getPasswordErrors(
       user.password,
       user.email,
