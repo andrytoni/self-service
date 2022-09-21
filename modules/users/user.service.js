@@ -29,7 +29,6 @@ const userService = (User) => {
     if (uppercasePassword.includes(partOfEmail) === true) {
       passwordError.errors.push("- Can't contain parts of email");
     }
-
     for (let i = 0; i < partsOfName.length; i++) {
       if (uppercasePassword.includes(partsOfName[i])) {
         passwordError.errors.push("- Can't contain parts of the name.");
@@ -48,12 +47,15 @@ const userService = (User) => {
     if (!user) {
       throw new Error('Parameters are required');
     }
-
-    if (!user.email.includes('@')) {
+    if (
+      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        user.email
+      )
+    ) {
       throw new Error('Email not valid');
     }
 
-    let passwordErrors = getPasswordErrors(
+    const passwordErrors = getPasswordErrors(
       user.password,
       user.email,
       user.name
@@ -77,6 +79,9 @@ const userService = (User) => {
   const findById = async (id) => {
     if (!id) {
       throw new Error('Id is required');
+    }
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      throw new Error('Id not valid');
     }
 
     return User.findById(id);
@@ -103,8 +108,20 @@ const userService = (User) => {
     if (!id) {
       throw new Error('ID is required.');
     }
+
     if (!userUpdate) {
       throw new Error('Update parameter is required.');
+    }
+    if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+      throw new Error('Id not valid');
+    }
+    if (
+      userUpdate.email &&
+      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        userUpdate.email
+      )
+    ) {
+      throw new Error('Email not valid');
     }
     if (userUpdate.password) {
       throw new Error('Password is not allowed to update.');
@@ -127,17 +144,16 @@ const userService = (User) => {
       throw new Error('Passwords should match.');
     }
 
-    let user = await findById(id);
-    if (user == null) {
-      throw new Error('User not found');
+    const user = await findById(id);
+    if (!user) {
+      throw new Error('User not found.');
     }
 
-    let passwordErrors = getPasswordErrors(
+    const passwordErrors = getPasswordErrors(
       passwordUpdate1,
       user.email,
       user.name
     );
-
     if (passwordErrors.hasError === true) {
       throw new Error(passwordErrors.errors.join('\n'));
     }
@@ -150,9 +166,9 @@ const userService = (User) => {
       throw new Error('ID is required');
     }
 
-    let user = await findById(id);
-    if (user == null) {
-      throw new Error('User not found');
+    const user = await findById(id);
+    if (!user) {
+      throw new Error('User not found.');
     }
 
     if (user.isActive === true) {
