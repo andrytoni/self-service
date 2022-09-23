@@ -96,9 +96,10 @@ const userService = (User) => {
     const { name, role, isActive, date } = query;
     const finalQuery = {};
 
-    if (name) finalQuery.name = name.toUpperCase();
+    if (name) finalQuery.name = { $regex: name, $options: 'i' };
     if (role) finalQuery.role = role.toUpperCase();
-    if (isActive) finalQuery.isActive = isActive == 'true';
+    if (isActive || isActive === false)
+      finalQuery.isActive = isActive.toString() === 'true';
     if (date) {
       const startDate = new Date(date);
       const finalDate = new Date(date);
