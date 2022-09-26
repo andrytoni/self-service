@@ -98,8 +98,17 @@ const UsersService = (User) => {
 
     if (name) finalQuery.name = { $regex: name, $options: 'i' };
     if (role) finalQuery.role = role.toUpperCase();
-    if (isActive || isActive === false)
+    if (isActive || isActive === false) {
+      if (
+        isActive !== false &&
+        isActive !== true &&
+        (isActive !== 'false') & (isActive !== 'true')
+      ) {
+        console.log(`User status must be true or false`);
+      }
       finalQuery.isActive = isActive.toString() === 'true';
+    }
+
     if (date) {
       const startDate = new Date(date);
       const finalDate = new Date(date);
