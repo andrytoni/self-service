@@ -3,7 +3,8 @@ import express from 'express';
 import productsController from './modules/products/products.controller.js';
 import ordersController from './modules/orders/orders.controller.js';
 import mongoose from 'mongoose';
-import orderServiceTest from './order-service-test.js';
+import ordersServiceTest from './orders.service.test.js';
+import usersServiceTest from './users.service.test.js';
 
 mongoose.connect(
   process.env.MONGODB_URI,
@@ -11,7 +12,8 @@ mongoose.connect(
     useNewUrlParser: true,
   },
   async () => {
-    await orderServiceTest();
+    await ordersServiceTest();
+    await usersServiceTest();
   }
 );
 

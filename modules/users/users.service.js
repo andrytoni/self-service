@@ -104,7 +104,7 @@ const UsersService = (User) => {
         isActive !== true &&
         (isActive !== 'false') & (isActive !== 'true')
       ) {
-        console.log(`User status must be true or false`);
+        throw new Error('User status must be true or false.');
       }
       finalQuery.isActive = isActive.toString() === 'true';
     }
