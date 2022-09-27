@@ -1,17 +1,17 @@
 import mongoose from 'mongoose';
 
-const orderService = (Order) => {
+const OrderService = (Order) => {
   const calculateTotal = (products) => {
     if (Array.isArray(products) == false) {
       throw new Error('Array of products is required');
     }
 
-    let total = products.reduce((previousValue, currentValue) => {
+    const total = products.reduce((previousValue, currentValue) => {
       if (isNaN(currentValue.price) == true) {
         throw new Error('Price is not a valid number');
       }
 
-      let current = Number(currentValue.price);
+      const current = Number(currentValue.price);
       return previousValue + current;
     }, 0);
 
@@ -122,4 +122,4 @@ const orderService = (Order) => {
   };
 };
 
-export default orderService;
+export default OrderService;
