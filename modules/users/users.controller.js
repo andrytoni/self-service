@@ -15,21 +15,11 @@ usersController.post('/', async (req, res, next) => {
   }
 });
 
-usersController.get('/email/:email', async (req, res, next) => {
-  try {
-    const findByEmail = await usersService.findByEmail(req.params.email);
-
-    return res.json(findByEmail);
-  } catch (error) {
-    return next(error);
-  }
-});
-
 usersController.get('/:id', async (req, res, next) => {
   try {
-    const findById = await usersService.findById(req.params.id);
+    const user = await usersService.findById(req.params.id);
 
-    return res.json(findById);
+    return res.json(user);
   } catch (error) {
     return next(error);
   }
@@ -37,9 +27,9 @@ usersController.get('/:id', async (req, res, next) => {
 
 usersController.get('/', async (req, res, next) => {
   try {
-    const findUsers = await usersService.find(req.query);
+    const users = await usersService.find(req.query);
 
-    return res.json(findUsers);
+    return res.json(users);
   } catch (error) {
     return next(error);
   }
@@ -47,9 +37,9 @@ usersController.get('/', async (req, res, next) => {
 
 usersController.put('/:id', async (req, res, next) => {
   try {
-    const updateUser = await usersService.updateUser(req.params.id, req.body);
+    const updatedUser = await usersService.updateUser(req.params.id, req.body);
 
-    return res.json(updateUser);
+    return res.json(updatedUser);
   } catch (error) {
     return next(error);
   }
@@ -57,12 +47,12 @@ usersController.put('/:id', async (req, res, next) => {
 
 usersController.put('/password/:id', async (req, res, next) => {
   try {
-    const newUserPassword = await usersService.changePassword(
+    const updatedUser = await usersService.changePassword(
       req.params.id,
       req.body
     );
 
-    return res.json(newUserPassword);
+    return res.json(updatedUser);
   } catch (error) {
     return next(error);
   }
@@ -70,11 +60,12 @@ usersController.put('/password/:id', async (req, res, next) => {
 
 usersController.put('/status/:id', async (req, res, next) => {
   try {
-    const newUserStatus = await usersService.changeUserStatus(req.params.id);
+    const updatedUser = await usersService.changeUserStatus(req.params.id);
 
-    return res.json(newUserStatus);
+    return res.json(updatedUser);
   } catch (error) {
     return next(error);
   }
 });
+
 export default usersController;
