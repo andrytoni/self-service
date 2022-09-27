@@ -3,19 +3,10 @@ import express from 'express';
 import productsController from './modules/products/products.controller.js';
 import ordersController from './modules/orders/orders.controller.js';
 import mongoose from 'mongoose';
-import ordersServiceTest from './orders.service.test.js';
-import usersServiceTest from './users.service.test.js';
 
-mongoose.connect(
-  process.env.MONGODB_URI,
-  {
-    useNewUrlParser: true,
-  },
-  async () => {
-    await ordersServiceTest();
-    await usersServiceTest();
-  }
-);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -28,11 +19,8 @@ const errorHandler = (err, req, res, next) => {
 };
 
 app.use(express.json());
-
 app.use('/products', productsController);
-
 app.use('/orders', ordersController);
-
 app.get('/', (req, res) => {
   return res.send(`Hello World`);
 });
