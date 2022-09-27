@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import Product from '../../models/product.js';
-import productsService from './products.service.js';
+import ProductsService from './products.service.js';
 
 const productsController = Router();
-const productService = productsService(Product);
+const productsService = ProductsService(Product);
 
 productsController.get('/', async (req, res, next) => {
   try {
-    const findProducts = await productService.findAll();
-    return res.json(findProducts);
+    const products = await productsService.findAll();
+    return res.json(products);
   } catch (err) {
     return next(err);
   }
@@ -16,8 +16,8 @@ productsController.get('/', async (req, res, next) => {
 
 productsController.get('/:name', async (req, res, next) => {
   try {
-    const findByName = await productService.findByName(req.params.name);
-    return res.json(findByName);
+    const product = await productsService.findByName(req.params.name);
+    return res.json(product);
   } catch (err) {
     return next(err);
   }
@@ -25,7 +25,7 @@ productsController.get('/:name', async (req, res, next) => {
 
 productsController.post('/', async (req, res, next) => {
   try {
-    const newProduct = await productService.createNewProduct(req.body);
+    const newProduct = await productsService.createNewProduct(req.body);
     return res.json(newProduct);
   } catch (err) {
     return next(err);
@@ -34,12 +34,12 @@ productsController.post('/', async (req, res, next) => {
 
 productsController.put('/:name', async (req, res, next) => {
   try {
-    const update = await productService.updateProduct(
+    const updatedProduct = await productsService.updateProduct(
       req.params.name,
       req.body
     );
 
-    return res.json(update);
+    return res.json(updatedProduct);
   } catch (err) {
     return next(err);
   }
@@ -47,8 +47,8 @@ productsController.put('/:name', async (req, res, next) => {
 
 productsController.delete('/:name', async (req, res, next) => {
   try {
-    const del = await productService.deleteProduct(req.params.name);
-    return res.json(del);
+    const deletedOrder = await productsService.deleteProduct(req.params.name);
+    return res.json(deletedOrder);
   } catch (err) {
     return next(err);
   }

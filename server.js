@@ -4,17 +4,10 @@ import productsController from './modules/products/products.controller.js';
 import ordersController from './modules/orders/orders.controller.js';
 import usersController from './modules/users/users.controller.js';
 import mongoose from 'mongoose';
-import orderServiceTest from './order-service-test.js';
 
-mongoose.connect(
-  process.env.MONGODB_URI,
-  {
-    useNewUrlParser: true,
-  },
-  async () => {
-    await orderServiceTest();
-  }
-);
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,11 +20,8 @@ const errorHandler = (err, req, res, next) => {
 };
 
 app.use(express.json());
-
 app.use('/products', productsController);
-
 app.use('/orders', ordersController);
-
 app.use('/users', usersController);
 
 app.get('/', (req, res) => {
