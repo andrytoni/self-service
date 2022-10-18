@@ -125,8 +125,6 @@ const UsersService = (User) => {
   };
 
   const updateUser = async (id, userUpdate) => {
-    console.log(userUpdate);
-
     if (!id) {
       throw new Error('ID is required.');
     }
