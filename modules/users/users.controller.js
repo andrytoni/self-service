@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import User from '../../models/user.js';
+
 import UsersService from './users.service.js';
+
 
 const usersController = Router();
 const usersService = UsersService(User);
 
 usersController.post('/', async (req, res, next) => {
   try {
+
     const newUser = await usersService.createNewUser(req.body);
+
 
     return res.json(newUser);
   } catch (error) {
@@ -47,12 +51,16 @@ usersController.put('/:id', async (req, res, next) => {
 
 usersController.put('/password/:id', async (req, res, next) => {
   try {
-    console.log(req.body);
 
     const updatedUser = await usersService.changePassword(
       req.params.id,
       req.body.password1,
       req.body.password2
+
+    const updatedUser = await usersService.changePassword(
+      req.params.id,
+      req.body
+
     );
 
     return res.json(updatedUser);

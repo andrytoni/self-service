@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 const id = mongoose.Types.ObjectId;
 
@@ -24,11 +25,10 @@ const users = [
   },
   {
     '_id': new id('632e2037e8b3f295bf4d5166'),
-    'name': 'ANDRE LUIZ FERNANDES DE BRITO',
-    'email': 'andre@hotmail.com',
-    'password': 'Andry@123',
-    'role': 'VIEWER',
-    'isActive': true,
+    
+const users = [
+  {
+
     'createdAt': new Date('2022-09-23T21:08:05.518Z'),
     '__v': 0,
   },
@@ -193,5 +193,28 @@ const usersController = [
 ];
 
 export { users, usersController };
-// const find = users.filter((element, 'ANDRÉ') => element);
-// console.log(find);
+
+    'createdAt': '2022-09-23',
+    '_id': '01',
+  },
+  {
+    'name': 'ANTONIO SILVEIRA DA SILVA',
+    'email': 'gilerade@hotmail.com',
+    'password': 'Andry@123',
+    'role': 'VIEWER',
+    'isActive': true,
+    'createdAt': '2022-09-23',
+    '_id': '02',
+  },
+  {
+    'name': 'GILBERTO SOUZA',
+    'email': 'gilberto@hotmail.com',
+    'password': 'Andry@123',
+    'role': 'VIEWER',
+    'isActive': false,
+    'createdAt': '2022-09-19',
+    '_id': '03',
+  },
+];
+
+export default users;
