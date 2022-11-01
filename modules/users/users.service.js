@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import mongoose from 'mongoose';
 
 const UsersService = (User) => {
@@ -50,6 +51,7 @@ const UsersService = (User) => {
       throw new Error('Parameters are required.');
     }
     if (
+      // eslint-disable-next-line
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         user.email
       )
@@ -73,14 +75,6 @@ const UsersService = (User) => {
     return newUser.save();
   };
 
-  const findByEmail = async (email) => {
-    if (!email) {
-      throw new Error('Email is required.');
-    }
-
-    return User.findOne({ email: email });
-  };
-
   const findById = async (id) => {
     if (!id) {
       throw new Error('Id is required.');
@@ -93,9 +87,20 @@ const UsersService = (User) => {
   };
 
   const find = async (query) => {
-    const { name, role, isActive, date } = query;
+    const { name, role, isActive, date, email } = query;
     const finalQuery = {};
 
+    if (email) {
+      if (
+        // eslint-disable-next-line
+        !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          email
+        )
+      ) {
+        throw new Error('Email not valid.');
+      }
+      finalQuery.email = email;
+    }
     if (name) finalQuery.name = { $regex: name, $options: 'i' };
     if (role) finalQuery.role = role.toUpperCase();
     if (isActive || isActive === false) {
@@ -132,6 +137,7 @@ const UsersService = (User) => {
     }
     if (
       userUpdate.email &&
+      // eslint-disable-next-line
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
         userUpdate.email
       )
@@ -195,7 +201,6 @@ const UsersService = (User) => {
 
   return {
     createNewUser,
-    findByEmail,
     findById,
     find,
     updateUser,
