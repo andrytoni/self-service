@@ -1,28 +1,66 @@
-import mongoose from 'mongoose';
+import { Model, DataTypes } from 'sequelize';
 
-const schema = new mongoose.Schema({
-  name: { type: String, required: true, uppercase: true, trim: true },
-  email: {
-    type: String,
-    required: true,
-    lowercase: true,
-    trim: true,
-    unique: true,
-  },
-  password: { type: String, required: true },
-  role: {
-    type: String,
-    default: 'VIEWER',
-    required: true,
-    uppercase: true,
-    trim: true,
-  },
-  isActive: { type: Boolean, default: true, required: true },
-  createdAt: { type: Date, default: new Date() },
-  token: { type: String, required: false },
-  tokenGeneration: { type: Date, required: false },
-});
+('use strict');
+class User extends Model {
+  static init(sequelize) {
+    super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        email: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+          validate: {
+            notEmpty: true,
+            isEmail: true,
+          },
+        },
+        password: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        role: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          defaultValue: 'VIEWER',
+          validate: {
+            is: /^(viewer|admin|editor)$/i,
+          },
+        },
+        isActive: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: true,
+          allowNull: false,
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+          field: 'created_at',
+        },
+        token: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
+        token_generation: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        sequelize,
+      }
+    );
+  }
+}
 
-export default mongoose.model('User', schema);
-
-//Dono de restaurante, gerente, garçom, cozinheiro, caixa
+export default User;

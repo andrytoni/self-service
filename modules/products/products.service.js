@@ -1,40 +1,42 @@
+import { Op } from 'sequelize';
 const productsService = (Product) => {
   const find = async (query) => {
     const { name, type, price, inventory } = query;
     const finalQuery = {};
 
-    if (name) finalQuery.name = { $regex: name, $options: 'i' };
-    if (type) finalQuery.type = { $regex: type, $options: 'i' };
-    if (price) finalQuery.price = { $lte: price };
-    if (inventory) finalQuery.inventory = { $lte: inventory };
+    if (name) finalQuery.name = name.toUpperCase();
+    if (type) finalQuery.type = type.toUpperCase();
+    if (price) finalQuery.price = { [Op.lte]: price };
+    if (inventory) finalQuery.inventory = { [Op.lte]: inventory };
 
-    return Product.find(finalQuery);
+    return Product.findAll({ where: finalQuery });
   };
 
   const findById = async (id) => {
     if (!id) {
       throw new Error('ID is required');
     }
-    return Product.findById(id);
+    return Product.findByPk(id);
   };
 
-  const createNewProduct = async (reqBody) => {
-    if (!reqBody) {
+  const createNewProduct = async (product) => {
+    if (!product) {
       throw new Error('Parameters are required');
     }
-    return new Product(reqBody).save();
+    if (product.name) product.name.toUpperCase();
+
+    return await Product.create(product);
   };
 
-  const updateProduct = async (name, reqBody) => {
+  const updateProduct = async (name, update) => {
     if (!name) {
       throw new Error('Name is required');
     }
-    if (!reqBody) {
+    if (!update) {
       throw new Error('Update parameter is required');
     }
-    return Product.findOneAndUpdate({ name: name.toUpperCase() }, reqBody, {
-      returnDocument: 'after',
-    });
+
+    return Product.update(update, { where: { name: name.toUpperCase() } });
   };
 
   const deleteProduct = async (name) => {
@@ -42,7 +44,7 @@ const productsService = (Product) => {
       throw new Error('Name is required');
     }
 
-    return Product.deleteOne({ name: name.toUpperCase() });
+    return Product.destroy({ where: { name: name.toUpperCase() } });
   };
 
   return {

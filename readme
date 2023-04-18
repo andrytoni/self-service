@@ -1,0 +1,5 @@
+Criar migration
+npx sequelize migration:create --name=create-product
+
+Rodar migration
+npx sequelize db:migrate

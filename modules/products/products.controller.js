@@ -15,9 +15,9 @@ productsController.get('/', async (req, res, next) => {
   }
 });
 
-productsController.get('/:name', async (req, res, next) => {
+productsController.get('/:id', async (req, res, next) => {
   try {
-    const product = await productsService.findByName(req.params.name);
+    const product = await productsService.findById(req.params.id);
 
     return res.json(product);
   } catch (err) {
